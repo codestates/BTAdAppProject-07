@@ -1,3 +1,4 @@
+import { atom, initialState, useRecoilState } from "recoil";
 import {
   AptosClient,
   AptosAccount,
@@ -18,11 +19,22 @@ import {
 } from "@mui/material";
 
 export default function NFT() {
+  const PublicKeyState = atom({
+    key: "publicKey",
+    default: null,
+  });
+  const AddressState = atom({
+    key: "address",
+    default: null,
+  });
+  const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState);
+  const [address, setAddressState] = useRecoilState(AddressState);
+
   const [tokenname, setTokenname] = useState(null);
   const [collection, setCollection] = useState(null);
   const [tokendesc, setTokendesc] = useState(null);
-  const [supply, setSupply] = useState(null);
-  const [address, setAddress] = useState(null);
+  const [supply, setSupply] = useState(1);
+
   const [nfturl, setNfturl] = useState(null);
   const [imageError, setImageError] = useState(true);
   const [account, setAccount] = useState(null);
@@ -50,32 +62,35 @@ export default function NFT() {
     // setAccount(account)
   };
 
-  const createToken = async (collection, tokenname, tokendesc, supply, uri) => {
+  const createToken = async () => {
     // Create a token in that collection.
+    console.log(
+      account,
+      collection,
+      tokenname,
+      tokendesc,
+      parseInt(supply),
+      nfturl
+    );
     const txnHash2 = await clients.tokenClient.createToken(
-      accounts.alice,
-      collectionName,
-      tokenName,
-      tokenDescription,
-      1,
-      uri
+      account,
+      collection,
+      tokenname,
+      tokendesc,
+      parseInt(supply),
+      nfturl
     );
     await clients.client.waitForTransaction(txnHash2, { checkSuccess: true });
+    await getCollectionData();
   };
 
-  const getCollectionData = async (
-    collectionName,
-    tokenName,
-    tokenPropertyVersion
-  ) => {
+  const getCollectionData = async () => {
     // Print the collection data.
     const collectionData = await clients.tokenClient.getCollectionData(
       accounts.alice.address(),
       collectionName
     );
-    console.log(
-      `Alice's collection: ${JSON.stringify(collectionData, null, 4)}`
-    );
+    console.log(`collection: ${JSON.stringify(collectionData, null, 4)}`);
 
     // Get the token balance.
     const tokenBalance = await clients.tokenClient.getToken(
@@ -129,80 +144,86 @@ export default function NFT() {
 
   return (
     <Container>
-      <Container>
-        <div>
-          <h2>NFT 생성</h2>
+      <Container sx={{ m: "1rem" }}>
+        <h2>NFT 생성</h2>
+        <Stack spacing={1}>
+          <label>Address</label>
+          <Container>
+            <p>{address}</p>
+          </Container>
+          <label>Public Key</label>
+          <Container>
+            <p>{publicKey}</p>
+          </Container>
+          <label>Collection Name</label>
+          <TextField
+            required
+            id="outlined-required"
+            label="collection"
+            name="collection"
+            onChange={(e) => {
+              setCollection(e.target.value);
+            }}
+          />
+          <label>NFT Token Name</label>
+          <TextField
+            required
+            id="outlined-required"
+            label="Token Name"
+            name="tokenname"
+            onChange={(e) => {
+              setTokenname(e.target.value);
+            }}
+          />
+          <label>Number of Token</label>
+          <TextField
+            required
+            id="outlined-required"
+            label="supply"
+            type="number"
+            defaultValue="1"
+            onChange={(e) => {
+              setSupply(e.target.value);
+            }}
+          />
+          <label>Token Description</label>
+          <TextField
+            required
+            id="outlined-required"
+            label="description"
+            name="description"
+            onChange={(e) => {
+              setTokendesc(e.target.value);
+            }}
+          />
+          <label>NFT Token Image Url</label>
 
-          <Stack spacing={1}>
-            <label>Collection Name</label>
-            <TextField
-              required
-              id="outlined-required"
-              label="collection"
-              name="collection"
-              onChange={(e) => {
-                setCollection(e.target.value);
+          <TextField
+            required
+            id="outlined-required"
+            label="url"
+            name="url"
+            onChange={(e) => {
+              setNfturl(e.target.value);
+              setImageError(false);
+            }}
+          />
+          <Container sx={{ width: 200 }}>
+            <p>NFT preview</p>
+            <img
+              width="500"
+              src={imageError ? "/image/initImg.svg" : nfturl}
+              alt="nft-image"
+              onError={(e) => {
+                setImageError(true);
               }}
+              data-src={nfturl}
             />
-            <label>NFT Token Name</label>
-            <TextField
-              required
-              id="outlined-required"
-              label="Token Name"
-              name="tokenname"
-              onChange={(e) => {
-                setTokenname(e.target.value);
-              }}
-            />
-            <label>Number of Token</label>
-            <TextField
-              required
-              id="outlined-required"
-              label="supply"
-              type="number"
-              defaultValue="1"
-              onChange={(e) => {
-                setSupply(e.target.value);
-              }}
-            />
-            <label>Token Description</label>
-            <TextField
-              required
-              id="outlined-required"
-              label="description"
-              name="description"
-              onChange={(e) => {
-                setTokendesc(e.target.value);
-              }}
-            />
-            <label>Token Uri</label>
-            <TextField
-              required
-              id="outlined-required"
-              label="uri"
-              name="uri"
-              onChange={(e) => {
-                setNfturl(e.target.value);
-              }}
-            />
-            <Container>
-              <div>
-                <p>NFT preview</p>
-                <img
-                  src={imageError ? "/image/initImg.svg" : nfturl}
-                  alt="nft-image"
-                  onError={(e) => {
-                    setImageError(true);
-                  }}
-                  data-src={nfturl}
-                />
-              </div>
-            </Container>
-            <Button variant="contained" onClick={createToken}>
-              create Token
-            </Button>
-          </Stack>
-        </div>
+          </Container>
+          <Button variant="contained" onClick={createToken}>
+            Create Token
+          </Button>
+        </Stack>
       </Container>
     </Container>
   );
