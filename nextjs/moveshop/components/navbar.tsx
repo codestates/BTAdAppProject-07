@@ -4,7 +4,7 @@ import {
   Button,
   Divider,
   Drawer,
-  IconButton,
+  IconButton, Link,
   List,
   ListItem,
   ListItemButton,
@@ -14,8 +14,9 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import {useRecoilState} from "recoil";
+import {useRouter} from "next/router";
 import {walletModalState} from "../states/recoilState"
-import {useWallet,} from "@manahippo/aptos-wallet-adapter";
+import {useWallet} from "@manahippo/aptos-wallet-adapter";
 import {WalletModal} from "./walletModal";
 
 const drawerWidth = 240;
@@ -26,10 +27,15 @@ export default function Navbar() {
 
   // recoil에서 state 값 가져오기
   const [openWalletModal, setOpenWalletModal] = useRecoilState(walletModalState)
+  const router = useRouter()
 
   const handleDrawer = () => {
     setOpen(!open);
   };
+
+  const handleClickListButton = route => {
+    router.push(route)
+  }
 
   const handleConnectWallet = () => {
     if(connected) disconnect()
@@ -37,27 +43,31 @@ export default function Navbar() {
   }
 
   // api에서 메뉴 받아오기
-  const menu = {
-    'default': [
-      {
-        id: 1,
-        auth: false,
-        text: 'collections',
-      },
-    ],
-    'personal': [
-      {
-        id: 3,
-        auth: true,
-        text: 'my page',
-      },
-      {
-        id: 4,
-        auth: true,
-        text: 'create NFT',
-      }
-    ],
-  }
+  const defaultMenu = [
+    {
+      id: 0,
+      route: '/',
+      text: 'home',
+    },
+    {
+      id: 1,
+      route: '/collections',
+      text: 'collections',
+    },
+  ]
+
+  const personalMenu = [
+    {
+      id: 3,
+      route: '/mypage',
+      text: 'my page',
+    },
+    {
+      id: 4,
+      route: '/',
+      text: 'create NFT',
+    }
+  ]
 
   return (
     <>
@@ -83,7 +93,7 @@ export default function Navbar() {
           role="presentation"
           onClick={handleDrawer}
         >
-          <List>
+          <List key={'default'}>
             <ListItem>
               <Button
                 variant={'outlined'}
@@ -94,24 +104,27 @@ export default function Navbar() {
                 {connected ? 'Disconnect' : 'Connect'}
               </Button>
             </ListItem>
-            {menu.default.map(menu => (
-              <ListItem key={menu.id} disablePadding>
-                <ListItemButton>
+            {defaultMenu.map(menu => (
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => handleClickListButton(menu.route)}>
                   <ListItemText primary={menu.text}/>
                 </ListItemButton>
               </ListItem>
             ))}
           </List>
           <Divider/>
-          <List>
-            {connected && menu.personal.map(menu => (
-              <ListItem key={menu.id} disablePadding>
-                <ListItemButton>
-                  <ListItemText primary={menu.text}/>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+          {
+            connected &&
+            <List key={'personal'}>
+              {personalMenu.map(menu => (
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => handleClickListButton(menu.route)}>
+                    <ListItemText primary={menu.text}/>
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          }
         </Box>
       </Drawer>
     </>
