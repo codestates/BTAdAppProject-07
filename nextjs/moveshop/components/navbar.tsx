@@ -1,108 +1,143 @@
+import React, {useEffect, useState} from "react";
 import {
-    Box,
-    Button,
-    Divider,
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText,
-    styled,
-    Toolbar
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Toolbar
 } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import {useRecoilState} from "recoil";
+import {AddressState, PublicKeyState} from "../states/recoilState"
+import {connectWallet, disconnectWallet} from "../utils/wallet"
+
 
 const drawerWidth = 240;
 
 export default function Navbar() {
-    const BootstrapButton = styled(Button)({
-        boxShadow: 'none',
-        textTransform: 'none',
-        padding: '6px 12px',
-        border: '1px solid',
-        borderRadius: '100px',
-        lineHeight: 1.5,
-        borderColor: '#00adb2',
-        backgroundColor: 'transparent',
-        color: '#00adb2',
-        '&:hover': {
-            borderColor: '#0062cc',
-            boxShadow: 'none',
-        },
-        '&:active': {
-            boxShadow: 'none',
-            borderColor: '#005cbf',
-        },
-        '&:focus': {
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-        },
-    })
+  const [open, setOpen] = useState(false)
+  const [isLogin, setIsLogin] = useState(false)
+  // recoil에서 state 값 가져오기
+  const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState)
+  const [address, setAddressState] = useRecoilState(AddressState)
 
+  useEffect(() => {
+    const publicKeyLocalstorage = localStorage.getItem('publicKey')
+    const addressLocalStorage = localStorage.getItem('address')
+    setPublicKeyState(publicKeyLocalstorage)
+    setAddressState(addressLocalStorage)
+    setIsLogin(!!publicKey)
+  }, [isLogin])
 
-    // api에서 메뉴 받아오기
-    const menu = {
-        'default': [
-            {
-                id: 1,
-                auth: false,
-                text: 'collections',
-            },
-            {
-                id: 2,
-                auth: false,
-                text: 'minting',
-            }
-        ],
-        'personal': [
-            {
-                id: 3,
-                auth: true,
-                text: 'my page',
-            }
-        ],
+  const handleDrawer = () => {
+    setOpen(!open);
+  };
+
+  const handleConnectWallet = () => {
+    if (!isLogin) {
+      connectWallet().then(
+        result => {
+          const {publicKey, address} = result
+          setPublicKeyState(publicKey)
+          setAddressState(address)
+          setIsLogin(true)
+        })
+        .catch(e => {
+          console.log('connect wallet error')
+          console.log(e)
+        })
+    } else {
+      disconnectWallet().then(() => {
+        setIsLogin(false)
+      })
+        .catch(e => console.log(e))
     }
 
-    return (
-        <>
-            <Box sx={{ display: 'flex' }}>
-                <CssBaseline />
-                <Drawer
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        '& .MuiDrawer-paper': {
-                            width: drawerWidth,
-                            boxSizing: 'border-box',
-                        },
-                    }}
-                    variant="permanent"
-                    anchor="left"
-                >
-                    <Toolbar>
-                        <BootstrapButton variant="contained">Connect wallet</BootstrapButton>
-                    </Toolbar>
-                    <Divider />
-                    <List>
-                        {menu.default.map(menu => (
-                            <ListItem key={menu.id} disablePadding>
-                                <ListItemButton>
-                                    <ListItemText primary={menu.text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        {menu.personal.map( menu => (
-                            <ListItem key={menu.id} disablePadding>
-                                <ListItemButton>
-                                    <ListItemText primary={menu.text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Drawer>
-            </Box>
-        </>
-    )
+  }
+
+  // api에서 메뉴 받아오기
+  const menu = {
+    'default': [
+      {
+        id: 1,
+        auth: false,
+        text: 'collections',
+      },
+    ],
+    'personal': [
+      {
+        id: 3,
+        auth: true,
+        text: 'my page',
+      },
+      {
+        id: 4,
+        auth: true,
+        text: 'create NFT',
+      }
+    ],
+  }
+
+  return (
+    <>
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawer}
+          edge="start"
+          sx={{mr: 2, ...(open && {display: 'none'})}}
+        >
+          <MenuIcon/>
+        </IconButton>
+      </Toolbar>
+      <Drawer
+        anchor="left"
+        open={open}
+        onClose={handleDrawer}
+      >
+        <Box
+          sx={{width: drawerWidth}}
+          role="presentation"
+          onClick={handleDrawer}
+        >
+          <List>
+            <ListItem>
+              <Button
+                variant={'outlined'}
+                startIcon={<AccountBalanceWalletIcon/>}
+                fullWidth={true}
+                onClick={handleConnectWallet}
+              >
+                {isLogin? 'Disconnect' : 'Connect'}
+              </Button>
+            </ListItem>
+            {menu.default.map(menu => (
+              <ListItem key={menu.id} disablePadding>
+                <ListItemButton>
+                  <ListItemText primary={menu.text}/>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider/>
+          <List>
+            {menu.personal.map(menu => (
+              <ListItem key={menu.id} disablePadding>
+                <ListItemButton>
+                  <ListItemText primary={menu.text}/>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+    </>
+  )
 }
