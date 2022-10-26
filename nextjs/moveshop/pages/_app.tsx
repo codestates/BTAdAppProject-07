@@ -1,16 +1,17 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type {AppProps} from 'next/app'
 import CssBaseline from "@mui/material/CssBaseline";
 import Layout from "../components/layout";
+import {RecoilRoot} from "recoil";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({Component, pageProps}: AppProps) {
   return (
-      <>
-        <CssBaseline/>
-          <Layout>
-              <Component {...pageProps} />
-          </Layout>
-      </>
+    <RecoilRoot>
+      <CssBaseline/>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </RecoilRoot>
   )
 }
 
