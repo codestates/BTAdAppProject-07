@@ -14,7 +14,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import {useRecoilState} from "recoil";
-import {AddressState, PublicKeyState} from "../states/recoilState"
+import {addressState, publicKeyState} from "../states/recoilState"
 import {connectWallet, disconnectWallet} from "../utils/wallet"
 
 
@@ -24,8 +24,8 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [isLogin, setIsLogin] = useState(false)
   // recoil에서 state 값 가져오기
-  const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState)
-  const [address, setAddressState] = useRecoilState(AddressState)
+  const [publicKey, setPublicKeyState] = useRecoilState(publicKeyState)
+  const [address, setAddressState] = useRecoilState(addressState)
 
   useEffect(() => {
     const publicKeyLocalstorage = localStorage.getItem('publicKey')
