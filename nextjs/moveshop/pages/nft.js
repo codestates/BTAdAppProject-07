@@ -5,7 +5,7 @@ import {
   TokenClient,
   CoinClient,
 } from "aptos";
-import { NODE_URL, FAUCET_URL } from "./common";
+import { NODE_URL, FAUCET_URL } from "../utils/common";
 import { useEffect, useState } from "react";
 import { Button, Container } from "@mui/material";
 
