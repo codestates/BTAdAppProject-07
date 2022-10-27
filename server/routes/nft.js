@@ -4,6 +4,7 @@ const router = express.Router();
 const nftController = require("../controller/nft");
 
 router.get("/nft", nftController.getNFT);
+router.get("/nfts", nftController.getNFTs);
 router.post("/nft", nftController.postNFT);
 
 router.post("/nft/collected", nftController.getCollectedCollections);

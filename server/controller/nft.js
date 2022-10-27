@@ -6,6 +6,19 @@ exports.getNFT = async (req, res, next) => {
   res.status(200).json({ data: nfts });
 };
 
+exports.getNFTs = async (req, res, next) => {
+  const address = req.query.user_address;
+  console.log(address);
+  const nfts = await models.nft.findAll({
+    where: {
+      user_address: {
+        [Op.eq]: address,
+      },
+    },
+  });
+  res.status(200).json({ data: nfts });
+};
+
 exports.postNFT = async (req, res, next) => {
   const { user_address, collection, nft_name, supply, nft_desc, img_url } =
     req.body;
