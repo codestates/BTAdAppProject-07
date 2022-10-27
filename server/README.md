@@ -17,7 +17,9 @@
 - sequelize db:migrate
 - dev-moveshop db에 nft, collection 테이블 생성됨
 
-### API
+## API List
+
+모든 NFT 조회
 
 ```
 GET /api/nft
@@ -39,6 +41,8 @@ response
 }
 ```
 
+사용자 address 기준 NFT 조회
+
 ```
 GET /api/nfts?user_address={user_address}
 response
@@ -59,6 +63,8 @@ response
 }
 ```
 
+NFT 생성
+
 ```
 POST /api/nft
 json 형식으로 보낼것
@@ -71,6 +77,8 @@ json 형식으로 보낼것
     "img_url": "http://image.png"
 }
 ```
+
+사용자 address 기준 Collection 조회
 
 ```
 GET /api/collection?user_address=******
@@ -88,6 +96,8 @@ response
     ]
 }
 ```
+
+Collection 생성
 
 ```
 POST /api/collection
