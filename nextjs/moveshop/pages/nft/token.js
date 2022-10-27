@@ -17,8 +17,10 @@ import {
   Blocks,
   TextField,
 } from "@mui/material";
+import { useRouter } from "next/router";
 
-export default function NFT() {
+export default function Token() {
+  const router = useRouter();
   const PublicKeyState = atom({
     key: "publicKey",
     default: null,
@@ -30,6 +32,9 @@ export default function NFT() {
   const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState);
   const [address, setAddressState] = useRecoilState(AddressState);
 
+  const [myAddress, setMyAddress] = useState(null);
+  const [myPublicKey, setMyPublicKey] = useState(null);
+
   const [tokenname, setTokenname] = useState(null);
   const [collection, setCollection] = useState(null);
   const [tokendesc, setTokendesc] = useState(null);
@@ -39,22 +44,30 @@ export default function NFT() {
   const [imageError, setImageError] = useState(true);
   const [account, setAccount] = useState(null);
 
+  const [collectionMsg, setCollectionMsg] = useState(null);
+
   const tokenPropertyVersion = 0;
   const clients = {};
   const accounts = {};
   const connectClient = async () => {
-    // Create API and faucet clients.
-    const client = new AptosClient(NODE_URL);
-    clients.client = client;
-    const faucetClient = new FaucetClient(NODE_URL, FAUCET_URL);
-    clients.faucetClient = faucetClient;
-    // Create client for working with the token module.
-    const tokenClient = new TokenClient(client);
-    clients.tokenClient = tokenClient;
-    // Create a coin client for checking account balances.
-    const coinClient = new CoinClient(client);
-    clients.coinClient = coinClient;
+    const NODE_URL = "https://fullnode.devnet.aptoslabs.com";
+    clients.client = new AptosClient(NODE_URL);
+    clients.tokenClient = new TokenClient(clients.client);
+    clients.coinClient = new CoinClient(clients.client);
     console.log(clients);
+  };
+
+  const connectMartian = async () => {
+    await connectClient();
+    if (!("martian" in window)) {
+      alert("martian 지갑을 설치해 주세요");
+      return window.martian;
+    }
+    // window.open("https://www.martianwallet.xyz/", "_blank");
+    const result = await window.martian.connect();
+    setMyAddress(result.address);
+    setMyPublicKey(result.publicKey);
+    console.log(result);
   };
 
   const getAccount = async () => {
@@ -64,6 +77,7 @@ export default function NFT() {
 
   const createToken = async () => {
     // Create a token in that collection.
+
     console.log(
       account,
       collection,
@@ -72,74 +86,38 @@ export default function NFT() {
       parseInt(supply),
       nfturl
     );
-    const txnHash2 = await clients.tokenClient.createToken(
-      account,
-      collection,
-      tokenname,
-      tokendesc,
-      parseInt(supply),
-      nfturl
-    );
-    await clients.client.waitForTransaction(txnHash2, { checkSuccess: true });
-    await getCollectionData();
+    try {
+      const txnHash = await window.martian.createToken(
+        collection,
+        tokenname,
+        tokendesc,
+        parseInt(supply),
+        nfturl
+      );
+      router.push("/nft/tokens");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const getCollectionData = async () => {
-    // Print the collection data.
-    const collectionData = await clients.tokenClient.getCollectionData(
-      accounts.alice.address(),
-      collectionName
-    );
-    console.log(`collection: ${JSON.stringify(collectionData, null, 4)}`);
-
-    // Get the token balance.
-    const tokenBalance = await clients.tokenClient.getToken(
-      address,
-      collectionName,
-      tokenName,
-      tokenPropertyVersion
-    );
-    console.log(`token balance: ${tokenBalance["amount"]}`);
-
-    // Get the token data.
-    const tokenData = await clients.tokenClient.getTokenData(
-      address,
-      collectionName,
-      tokenName
-    );
-    console.log(`token data: ${JSON.stringify(tokenData, null, 4)}`);
-  };
-
-  const getBalances = async () => {
-    // Print their balances.
-    const tokenBalance = await tokenClient.getToken(
-      address,
-      collectionName,
-      tokenName,
-      tokenPropertyVersion
-    );
-    const bobBalance2 = await tokenClient.getTokenForAccount(
-      bob.address(),
-      tokenId
-    );
-    console.log(`token balance: ${tokenBalance["amount"]}`);
-  };
-
-  const transferToken = async () => {
-    let txnHash5 = await tokenClient.directTransferToken(
-      fromAccount,
-      toAccount,
-      toAddress,
-      collectionName,
-      tokenName,
-      1,
-      tokenPropertyVersion
-    );
-    await client.waitForTransaction(txnHash5, { checkSuccess: true });
+    await connectClient();
+    console.log(clients);
+    try {
+      const collectionData = await clients.tokenClient.getCollectionData(
+        myAddress,
+        collection
+      );
+      console.log(collectionData);
+      setCollectionMsg("Collection 이 있습니다. 계속 진행하세요");
+    } catch (err) {
+      console.log(err);
+      setCollectionMsg("Collection 없습니다. 생성 후 진행하세요");
+    }
   };
 
   useEffect(() => {
-    connectClient();
+    // connectClient();
   }, []);
 
   return (
@@ -147,13 +125,16 @@ export default function NFT() {
       <Container sx={{ m: "1rem" }}>
         <h2>NFT 생성</h2>
         <Stack spacing={1}>
+          <Button variant="contained" onClick={connectMartian}>
+            Martian Wallet 연결
+          </Button>
           <label>Address</label>
           <Container>
-            <p>{address}</p>
+            <p>{myAddress}</p>
           </Container>
           <label>Public Key</label>
           <Container>
-            <p>{publicKey}</p>
+            <p>{myPublicKey}</p>
           </Container>
           <label>Collection Name</label>
           <TextField
@@ -165,6 +146,11 @@ export default function NFT() {
               setCollection(e.target.value);
             }}
           />
+          <label>{collectionMsg}</label>
+          <Button variant="contained" onClick={getCollectionData}>
+            Collection 확인 (없으면 생성해야 합니다)
+          </Button>
+
           <label>NFT Token Name</label>
           <TextField
             required

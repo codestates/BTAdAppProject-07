@@ -211,6 +211,21 @@ export default function NFT() {
     console.log(`Bob's token balance: ${bobBalance3["amount"]}`);
   };
 
+  const checkBalance = async () => {
+    const aptosAccountObject = {
+      address:
+        "0x978c213990c4833df71548df7ce49d54c759d6b6d932de22b24d56060b7af2aa",
+      privateKeyHex:
+        // eslint-disable-next-line max-len
+        "0xc5338cd251c22daa8c9c9cc94f498cc8a5c7e1d2e75287a5dda91096fe64efa5de19e5d1880cac87d57484ce9ed2e84cf0f9599f12e7cc3a52e4e7657a763f2c",
+      publicKeyHex:
+        "0xde19e5d1880cac87d57484ce9ed2e84cf0f9599f12e7cc3a52e4e7657a763f2c",
+    };
+    const account = AptosAccount.fromAptosAccountObject(aptosAccountObject);
+    console.log(account);
+    console.log(`Balance : ${await clients.coinClient.checkBalance(account)}`);
+  };
+
   useEffect(() => {
     // connectClient();
   }, []);
@@ -260,6 +275,10 @@ export default function NFT() {
         }}
       >
         get Collection Data
+      </Button>
+      <hr />
+      <Button variant="contained" onClick={checkBalance}>
+        check Balance
       </Button>
     </Container>
   );
