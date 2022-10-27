@@ -64,7 +64,7 @@ export default function Navbar() {
     },
     {
       id: 4,
-      route: '/',
+      route: '/nft/token',
       text: 'create NFT',
     }
   ]
