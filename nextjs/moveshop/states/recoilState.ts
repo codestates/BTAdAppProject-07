@@ -1,27 +1,15 @@
 import {atom, selector} from 'recoil'
 
-export const publicKeyState = atom({
-  key: 'publicKeyState',
-  default: ''
-})
-
-export const getPubicKeySelector = selector({
-  key: "getPubicKeySelector",
+export const getWalletModalState = selector({
+  key: "getWalletModalSelector",
   get: ({get}) => {
-    return get(publicKeyState)
+    return get(walletModalState)
   },
 });
 
-export const addressState = atom({
-  key: 'addressState',
-  default: ''
+export const walletModalState = atom({
+  key: 'walletModalState',
+  default: false
 })
-
-export const getAddressSelector = selector({
-  key: "getAddressSelector",
-  get: ({get}) => {
-    return get(addressState)
-  },
-});
 
 
