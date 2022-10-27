@@ -1,6 +1,7 @@
 import {Box, Tab, Tabs, Typography} from "@mui/material";
 import {ReactNode, SyntheticEvent, useState} from "react";
 import {useWallet} from "@manahippo/aptos-wallet-adapter";
+import CollectedItems from "../components/collectedItems"
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,8 +48,8 @@ export default function MyPage() {
     <>
       <Box sx={{ width: '100%'}}>
         <Box sx={{ width : '90%', margin: '0 auto', minHeight: '100px', backgroundColor: "#5a849b", color: "#fff"}}>
-          <Typography variant="h1" gutterBottom>
-            address {account?.address}
+          <Typography variant="h4" gutterBottom>
+            {`address ${account?.address}`}
           </Typography>
         </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider', width : '90%', margin: '0 auto'}}>
@@ -59,7 +60,7 @@ export default function MyPage() {
         </Box>
         <Box sx={{ width : '90%', margin: '0 auto'}}>
           <TabPanel value={value} index={0}>
-            Item One
+            <CollectedItems/>
           </TabPanel>
           <TabPanel value={value} index={1}>
             Item Two

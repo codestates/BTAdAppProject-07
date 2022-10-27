@@ -49,3 +49,17 @@ exports.postCollection = async (req, res, next) => {
       res.status(200).json({ result: "collection created" });
     });
 };
+
+exports.getCollectedCollections = async (req, res, next) => {
+  const address = req.query.user_address;
+  const collections = await models.collection.findAll({
+    attributes: ['collection_title'],
+    where: {
+      user_address: {
+        [Op.ne]: address,
+      },
+    },
+  });
+  res.status(200).json({ data: collections });
+};
+
