@@ -40,6 +40,26 @@ response
 ```
 
 ```
+GET /api/nfts?user_address={user_address}
+response
+{
+    "data": [
+        {
+            "id": 4,
+            "user_address": "0x37451e367e2222b10876b21b2da345794f74b31036bae6da0c27641de6b0dd5",
+            "collection": "My Collection 01",
+            "nft_name": "Token NFT 002",
+            "supply": 2,
+            "nft_desc": "Token Desc 002",
+            "img_url": "https://cdn.pixabay.com/photo/2022/08/31/09/06/pumpkin-7422802_1280.jpg",
+            "createdAt": "2022-10-27T12:11:37.000Z",
+            "updatedAt": "2022-10-27T12:11:37.000Z"
+        }
+    ]
+}
+```
+
+```
 POST /api/nft
 json 형식으로 보낼것
 {
