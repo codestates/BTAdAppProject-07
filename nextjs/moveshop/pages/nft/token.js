@@ -1,4 +1,4 @@
-// import { atom, initialState, useRecoilState } from "recoil";
+import { useWallet } from "@manahippo/aptos-wallet-adapter";
 import {
   AptosClient,
   AptosAccount,
@@ -16,22 +16,15 @@ import {
   Stack,
   Blocks,
   TextField,
+  MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Link from "next/link";
 
 export default function Token() {
   const router = useRouter();
-  // const PublicKeyState = atom({
-  //   key: "publicKey",
-  //   default: null,
-  // });
-  // const AddressState = atom({
-  //   key: "address",
-  //   default: null,
-  // });
-  // const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState);
-  // const [address, setAddressState] = useRecoilState(AddressState);
+  const { wallets, connect, account, disconnect } = useWallet();
 
   const [myAddress, setMyAddress] = useState(null);
   const [myPublicKey, setMyPublicKey] = useState(null);
@@ -43,13 +36,17 @@ export default function Token() {
 
   const [nfturl, setNfturl] = useState(null);
   const [imageError, setImageError] = useState(true);
-  const [account, setAccount] = useState(null);
 
   const [collectionMsg, setCollectionMsg] = useState(null);
+  const [collectionExist, setCollectionExist] = useState(true);
+
+  const [collections, setCollections] = useState([]);
+  const [selectedCollection, setSelectedCollection] = useState("");
 
   const tokenPropertyVersion = 0;
   const clients = {};
-  const accounts = {};
+  // const collections = [];
+
   const connectClient = async () => {
     const NODE_URL = "https://fullnode.devnet.aptoslabs.com";
     clients.client = new AptosClient(NODE_URL);
@@ -64,29 +61,18 @@ export default function Token() {
       alert("martian 지갑을 설치해 주세요");
       return window.martian;
     }
-    // window.open("https://www.martianwallet.xyz/", "_blank");
+
     const result = await window.martian.connect();
     setMyAddress(result.address);
     setMyPublicKey(result.publicKey);
     console.log(result);
-  };
-
-  const getAccount = async () => {
-    // const account = new AptosAccount();
-    // setAccount(account)
+    // await getCollectionsByAddress();
   };
 
   const createToken = async () => {
     // Create a token in that collection.
 
-    console.log(
-      account,
-      collection,
-      tokenname,
-      tokendesc,
-      parseInt(supply),
-      nfturl
-    );
+    console.log(collection, tokenname, tokendesc, parseInt(supply), nfturl);
     try {
       const txnHash = await window.martian.createToken(
         collection,
@@ -120,14 +106,27 @@ export default function Token() {
       );
       console.log(collectionData);
       setCollectionMsg("Collection 이 있습니다. 계속 진행하세요");
+      setCollectionExist(true);
     } catch (err) {
       console.log(err);
       setCollectionMsg("Collection 없습니다. 생성 후 진행하세요");
+      setCollectionExist(false);
     }
+  };
+
+  const getCollectionsByAddress = async () => {
+    const url = `http://localhost:8080/api/collection?user_address=${myAddress}`;
+    console.log(url);
+    const result = await axios.get(url);
+    console.log(collections.data);
+    collections = result.data;
+    console.log(result.data);
+    setCollections(result.data);
   };
 
   useEffect(() => {
     // connectClient();
+    connectMartian();
   }, []);
 
   return (
@@ -135,9 +134,6 @@ export default function Token() {
       <Container sx={{ m: "1rem" }}>
         <h2>NFT 생성</h2>
         <Stack spacing={1}>
-          <Button variant="contained" onClick={connectMartian}>
-            Martian Wallet 연결
-          </Button>
           <label>Address</label>
           <Container>
             <p>{myAddress}</p>
@@ -146,6 +142,26 @@ export default function Token() {
           <Container>
             <p>{myPublicKey}</p>
           </Container>
+          {/* <TextField
+            id="select-collection"
+            select
+            label="Select"
+            value={selectedCollection}
+            onChange={(e) => {
+              setSelectedCollection(e.target.value);
+            }}
+            helperText="Please select your currency"
+          >
+            {collections &
+              collections.map((collection) => (
+                <MenuItem
+                  key={collection.collection_title}
+                  value={collection.collection_title}
+                >
+                  {collection.collection_title}
+                </MenuItem>
+              ))}
+          </TextField> */}
           <label>Collection Name</label>
           <TextField
             required
@@ -157,6 +173,13 @@ export default function Token() {
             }}
           />
           <label>{collectionMsg}</label>
+          {collectionExist ? null : (
+            <Link href="/nft/collection">
+              <Button variant="contained" color="success">
+                Creaet Collection
+              </Button>
+            </Link>
+          )}
           <Button variant="contained" onClick={getCollectionData}>
             Collection 확인 (없으면 생성해야 합니다)
           </Button>
