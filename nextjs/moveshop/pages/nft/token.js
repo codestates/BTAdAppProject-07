@@ -1,4 +1,4 @@
-import { atom, initialState, useRecoilState } from "recoil";
+// import { atom, initialState, useRecoilState } from "recoil";
 import {
   AptosClient,
   AptosAccount,
@@ -18,19 +18,20 @@ import {
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Token() {
   const router = useRouter();
-  const PublicKeyState = atom({
-    key: "publicKey",
-    default: null,
-  });
-  const AddressState = atom({
-    key: "address",
-    default: null,
-  });
-  const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState);
-  const [address, setAddressState] = useRecoilState(AddressState);
+  // const PublicKeyState = atom({
+  //   key: "publicKey",
+  //   default: null,
+  // });
+  // const AddressState = atom({
+  //   key: "address",
+  //   default: null,
+  // });
+  // const [publicKey, setPublicKeyState] = useRecoilState(PublicKeyState);
+  // const [address, setAddressState] = useRecoilState(AddressState);
 
   const [myAddress, setMyAddress] = useState(null);
   const [myPublicKey, setMyPublicKey] = useState(null);
@@ -94,6 +95,15 @@ export default function Token() {
         parseInt(supply),
         nfturl
       );
+
+      const result = await axios.post("http://localhost:8080/api/nft", {
+        user_address: myAddress,
+        collection: collection,
+        nft_name: tokenname,
+        supply: parseInt(supply),
+        nft_desc: tokendesc,
+        img_url: nfturl,
+      });
       router.push("/nft/tokens");
     } catch (err) {
       console.log(err);

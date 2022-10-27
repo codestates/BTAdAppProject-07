@@ -9,6 +9,7 @@ exports.getNFT = async (req, res, next) => {
 exports.postNFT = async (req, res, next) => {
   const { user_address, collection, nft_name, supply, nft_desc, img_url } =
     req.body;
+  console.log(req.body);
   models.nft
     .create({
       user_address: user_address,
