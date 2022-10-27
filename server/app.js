@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const accountRoute = require("./routes/account");
+const nftRoute = require("./routes/nft");
+const collectionRoute = require("./routes/nft");
 
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -14,6 +16,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/account", accountRoute);
+app.use("/api", accountRoute);
+app.use("/api", nftRoute);
+app.use("/api", collectionRoute);
 
 app.listen(8080);
