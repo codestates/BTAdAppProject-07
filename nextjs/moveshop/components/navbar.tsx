@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {
   Box,
   Button,
@@ -14,51 +14,26 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import {useRecoilState} from "recoil";
-import {addressState, publicKeyState} from "../states/recoilState"
-import {connectWallet, disconnectWallet} from "../utils/wallet"
-
+import {walletModalState} from "../states/recoilState"
+import {useWallet,} from "@manahippo/aptos-wallet-adapter";
+import {WalletModal} from "./walletModal";
 
 const drawerWidth = 240;
 
 export default function Navbar() {
+  const { connected, disconnect } = useWallet();
   const [open, setOpen] = useState(false)
-  const [isLogin, setIsLogin] = useState(false)
-  // recoil에서 state 값 가져오기
-  const [publicKey, setPublicKeyState] = useRecoilState(publicKeyState)
-  const [address, setAddressState] = useRecoilState(addressState)
 
-  useEffect(() => {
-    const publicKeyLocalstorage = localStorage.getItem('publicKey')
-    const addressLocalStorage = localStorage.getItem('address')
-    setPublicKeyState(publicKeyLocalstorage)
-    setAddressState(addressLocalStorage)
-    setIsLogin(!!publicKey)
-  }, [isLogin])
+  // recoil에서 state 값 가져오기
+  const [openWalletModal, setOpenWalletModal] = useRecoilState(walletModalState)
 
   const handleDrawer = () => {
     setOpen(!open);
   };
 
   const handleConnectWallet = () => {
-    if (!isLogin) {
-      connectWallet().then(
-        result => {
-          const {publicKey, address} = result
-          setPublicKeyState(publicKey)
-          setAddressState(address)
-          setIsLogin(true)
-        })
-        .catch(e => {
-          console.log('connect wallet error')
-          console.log(e)
-        })
-    } else {
-      disconnectWallet().then(() => {
-        setIsLogin(false)
-      })
-        .catch(e => console.log(e))
-    }
-
+    if(connected) disconnect()
+    else setOpenWalletModal(true)
   }
 
   // api에서 메뉴 받아오기
@@ -86,6 +61,7 @@ export default function Navbar() {
 
   return (
     <>
+      <WalletModal/>
       <Toolbar>
         <IconButton
           color="inherit"
@@ -115,7 +91,7 @@ export default function Navbar() {
                 fullWidth={true}
                 onClick={handleConnectWallet}
               >
-                {isLogin? 'Disconnect' : 'Connect'}
+                {connected ? 'Disconnect' : 'Connect'}
               </Button>
             </ListItem>
             {menu.default.map(menu => (
@@ -128,7 +104,7 @@ export default function Navbar() {
           </List>
           <Divider/>
           <List>
-            {menu.personal.map(menu => (
+            {connected && menu.personal.map(menu => (
               <ListItem key={menu.id} disablePadding>
                 <ListItemButton>
                   <ListItemText primary={menu.text}/>
