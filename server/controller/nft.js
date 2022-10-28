@@ -63,9 +63,9 @@ exports.postCollection = async (req, res, next) => {
     });
 };
 
-exports.getCollectedCollections = async (req, res, next) => {
+exports.getCollections = async (req, res, next) => {
   const collections = await models.collection.findAll({
-    attributes: ['collection_title'],
+    attributes: ['user_address', 'collection_title', 'collection_desc'],
   });
   res.status(200).json({ data: collections });
 };

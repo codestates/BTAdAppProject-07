@@ -52,11 +52,6 @@ export default function Navbar() {
       route: '/',
       text: 'home',
     },
-    {
-      id: 1,
-      route: '/collections',
-      text: 'collections',
-    },
   ]
 
   const personalMenu = [

@@ -1,16 +1,15 @@
-import {Box} from "@mui/material";
-import {useEffect, useState} from "react";
+import {Box, Stack} from "@mui/material";
+import React, {useEffect, useState} from "react";
 import {MaybeHexString, WalletClient} from "@martiandao/aptos-web3-bip44.js";
 import {FAUCET_URL, NODE_URL} from "../utils/common";
-import ItemList from "./itemList";
 import {NextPage} from "next";
+import NFTItem from "./NFTItem";
 
 interface CollectedItemsProps {
   address?: MaybeHexString
 }
 
-
-const CollectedItems: NextPage<CollectedItemsProps> = (props) => {
+const MyCollectedItems: NextPage<CollectedItemsProps> = (props) => {
   const {address} = props
   const [collectedCollections, setCollectedCollections] = useState([])
 
@@ -43,10 +42,29 @@ const CollectedItems: NextPage<CollectedItemsProps> = (props) => {
   return (
     <>
       <Box>
-        <ItemList list={collectedCollections}/>
+        <Stack direction={{xs: 'column', sm: 'row'}} sx={{flexWrap: 'wrap', justifyContent: 'center'}}
+               spacing={{xs: 1, sm: 2, md: 4}}>
+          {
+            collectedCollections.length === 0 ?
+              <Box sx={{margin: '0 auto'}}>
+               보유한 NFT가 없습니다.
+              </Box>
+              :
+              collectedCollections.map(item =>
+                <NFTItem
+                  collection_title={item.collection_title}
+                  image={item.image}
+                  name={item.name}
+                  description={item.description}
+                  tokenId={item.tokenId}
+                  isMine={item.isMine}
+                />
+              )
+          }
+        </Stack>
       </Box>
     </>
   )
 }
 
-export default CollectedItems
+export default MyCollectedItems
