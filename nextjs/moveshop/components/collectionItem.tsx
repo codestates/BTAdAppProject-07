@@ -2,22 +2,26 @@ import {Box, Card, CardContent} from "@mui/material";
 import {NextPage} from "next";
 import {MaybeHexString} from "@martiandao/aptos-web3-bip44.js";
 import React from "react";
+import {getRandomColor} from "../utils/common";
+import {useRouter} from "next/router";
 
 export interface CollectionItemProps {
+  id: number;
   collection_title: string;
   collection_desc: string;
   creator: MaybeHexString
 }
 
 const CollectionItem: NextPage<CollectionItemProps> = (props) => {
-  const {collection_title, collection_desc, creator} = props;
+  const {id, collection_title, collection_desc, creator} = props;
+  const router = useRouter();
 
-  const getRandomColor = () => {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  const handleClickCollection = () => {
+    router.push(`/collection/${id}`)
   }
 
   return (
-    <Card sx={{width: '200px', margin: '20px !important'}}>
+    <Card sx={{width: '200px', margin: '20px !important'}} onClick={handleClickCollection}>
       <Box sx={{height: "150px", width : "200px", backgroundColor: `${getRandomColor()}`}}></Box>
       <CardContent>
         <Box sx={{fontSize:"18px"}}> {collection_title}</Box>

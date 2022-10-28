@@ -8,6 +8,7 @@ router.get("/nfts", nftController.getNFTs);
 router.post("/nft", nftController.postNFT);
 
 router.get("/collection", nftController.getCollection);
+router.get("/collection/:id", nftController.getCollectionById);
 router.post("/collection", nftController.postCollection);
 
 router.get("/collections", nftController.getCollections);

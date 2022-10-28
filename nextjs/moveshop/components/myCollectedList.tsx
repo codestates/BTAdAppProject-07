@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Box, Stack} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {MaybeHexString, WalletClient} from "@martiandao/aptos-web3-bip44.js";
@@ -9,7 +10,7 @@ interface CollectedItemsProps {
   address?: MaybeHexString
 }
 
-const MyCollectedItems: NextPage<CollectedItemsProps> = (props) => {
+const MyCollectedList: NextPage<CollectedItemsProps> = (props) => {
   const {address} = props
   const [collectedCollections, setCollectedCollections] = useState([])
 
@@ -46,12 +47,13 @@ const MyCollectedItems: NextPage<CollectedItemsProps> = (props) => {
                spacing={{xs: 1, sm: 2, md: 4}}>
           {
             collectedCollections.length === 0 ?
-              <Box sx={{margin: '0 auto'}}>
+              <Box sx={{margin: '10rem auto'}}>
                보유한 NFT가 없습니다.
               </Box>
               :
-              collectedCollections.map(item =>
+              collectedCollections.map((item, i) =>
                 <NFTItem
+                  key={i}
                   collection_title={item.collection_title}
                   image={item.image}
                   name={item.name}
@@ -67,4 +69,4 @@ const MyCollectedItems: NextPage<CollectedItemsProps> = (props) => {
   )
 }
 
-export default MyCollectedItems
+export default MyCollectedList

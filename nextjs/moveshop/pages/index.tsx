@@ -4,8 +4,16 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import {Box, Divider} from "@mui/material";
 import CollectionList from "../components/collectionList";
+import {useEffect, useState} from "react";
+import {getRandomColor} from "../utils/common";
 
 const Home: NextPage = () => {
+  const [bgColor, setBGColor] = useState('')
+
+  useEffect(() => {
+    setBGColor(getRandomColor())
+  }, [])
+
   return (
     <Box className={styles.container}>
       <Head>
@@ -14,26 +22,19 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       <main className={styles.main}>
-        <Box
-          sx={{
-            width: '100%',
-            height: 300,
-            backgroundColor: 'primary.dark',
-            '&:hover': {
-              backgroundColor: 'primary.main',
-              opacity: [0.9, 0.8, 0.7],
-            },
-          }}
-        >
-          <div>민팅 페이지로</div>
+        <Box sx={{height: "300px", padding: "20px", backgroundColor: `${bgColor}`, color: "#fff", position: 'relative'}}>
+          <Box>민팅 페이지로</Box>
         </Box>
         <Box sx={{
           width: '100%',
           height: 10,
         }}></Box>
-        <h4>New</h4>
-        <Divider variant="middle"/>
-        <CollectionList/>
+
+        <Box sx={{ width : '90%', margin: '0 auto'}}>
+          <h4>New collections</h4>
+          <Divider variant="middle"/>
+          <CollectionList/>
+        </Box>
       </main>
     </Box>
   )
