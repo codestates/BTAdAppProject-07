@@ -5,7 +5,7 @@ import {ItemProps} from "../interface/props/itemProps";
 import {useRecoilState} from "recoil";
 import {sellNFTModalState, tokenIdState} from "../states/recoilState";
 
-const Item: NextPage<ItemProps> = (props) => {
+const NFTItem: NextPage<ItemProps> = (props) => {
   const {collection_title, image, name, description, tokenId, isMine} = props;
   const [selectedTokenId, setTokenId] = useRecoilState(tokenIdState)
   const [openSellNFTModal, setOpenSellNFTModal] = useRecoilState(sellNFTModalState)
@@ -18,23 +18,21 @@ const Item: NextPage<ItemProps> = (props) => {
   }
 
   return (
-    <Box>
-      <Card sx={{maxWidth: '15rem', margin: '20px !important'}} onClick={handleClickCard}>
-        <CardMedia
-          component="img"
-          height="194"
-          image={image}
-          alt="NFT 이미지"
-        />
-        <CardContent>
-          <div> {collection_title}</div>
-          <div>{name}</div>
-          <div>{description}</div>
-        </CardContent>
-      </Card>
-    </Box>
-
+    <Card sx={{width: '200px', marginTop: "10px !important"}} onClick={handleClickCard}>
+      <CardMedia
+        component="img"
+        height="194"
+        width="200"
+        image={image}
+        alt="NFT 이미지"
+      />
+      <CardContent>
+        <div> {collection_title}</div>
+        <div>{name}</div>
+        <div>{description}</div>
+      </CardContent>
+    </Card>
   )
 }
 
-export default Item
+export default NFTItem

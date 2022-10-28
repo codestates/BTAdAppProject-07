@@ -2,8 +2,8 @@ import type {NextPage} from 'next'
 import Head from 'next/head'
 
 import styles from '../styles/Home.module.css'
-import ItemList from "../components/itemList";
 import {Box, Divider} from "@mui/material";
+import CollectionList from "../components/collectionList";
 
 const Home: NextPage = () => {
   return (
@@ -33,7 +33,7 @@ const Home: NextPage = () => {
         }}></Box>
         <h4>New</h4>
         <Divider variant="middle"/>
-        <ItemList list={[]}/>
+        <CollectionList/>
       </main>
     </Box>
   )

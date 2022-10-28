@@ -1,14 +1,8 @@
 import {Box, Tab, Tabs} from "@mui/material";
 import React, {ReactNode, SyntheticEvent, useState} from "react";
 import {useWallet} from "@manahippo/aptos-wallet-adapter";
-import CollectedItems from "../components/collectedItems";
+import MyCollectedItems from "../components/myCollectedItems";
 import {SellNFTModal} from "../components/sellNFTModal";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
 
 const TabPanel = (props: { index: number, value: any, children: ReactNode }) => {
 
@@ -55,10 +49,7 @@ export default function MyPage() {
         </Box>
         <Box sx={{ width : '90%', margin: '0 auto'}}>
           <TabPanel value={value} index={0}>
-            <CollectedItems address={account?.address}/>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            Item Two
+            <MyCollectedItems address={account?.address}/>
           </TabPanel>
         </Box>
       </Box>
