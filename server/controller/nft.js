@@ -50,6 +50,29 @@ exports.getCollection = async (req, res, next) => {
   res.status(200).json({ data: collection });
 };
 
+exports.getCollectionById = async (req, res, next) => {
+  const id = req.params.id;
+  const collection = await models.collection.findOne({
+    where: {
+      id: {
+        [Op.eq]: id,
+      },
+    },
+  });
+  const nfts = await models.nft.findAll({
+    where: {
+      collection: {
+        [Op.eq]: collection.collection_title,
+      },
+    },
+  })
+  res.status(200).json({ data: {
+      collection: collection,
+      nfts: nfts,
+    }
+  });
+};
+
 exports.postCollection = async (req, res, next) => {
   const { user_address, collection_title, collection_desc } = req.body;
   models.collection
@@ -65,7 +88,7 @@ exports.postCollection = async (req, res, next) => {
 
 exports.getCollections = async (req, res, next) => {
   const collections = await models.collection.findAll({
-    attributes: ['user_address', 'collection_title', 'collection_desc'],
+    attributes: ['id', 'user_address', 'collection_title', 'collection_desc'],
   });
   res.status(200).json({ data: collections });
 };

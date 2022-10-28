@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Button, Dialog, DialogContent} from "@mui/material";
 import {NextPage} from "next";
 import {useRecoilState} from "recoil";

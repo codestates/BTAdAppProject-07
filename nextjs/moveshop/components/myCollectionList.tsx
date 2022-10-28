@@ -3,16 +3,22 @@ import React, {useEffect, useState} from "react";
 import {NextPage} from "next";
 import axios from "axios";
 import CollectionItem from "./collectionItem";
+import {MaybeHexString} from "@martiandao/aptos-web3-bip44.js";
 
-const CollectionList: NextPage = () => {
+interface CollectionListProps {
+  address?: MaybeHexString;
+}
+const MyCollectionList: NextPage<CollectionListProps> = (props) => {
   const [collections, setCollectedCollections] = useState([])
+  const {address} = props
 
   useEffect(() => {
     getResources()
   }, [])
 
   const getResources = async () => {
-    const result = await axios.get("http://localhost:8080/api/collections")
+    const result = await axios.get(`http://localhost:8080/api/collection?user_address=${address}`)
+    console.log(result)
     setCollectedCollections(result.data.data)
   }
 
@@ -24,7 +30,7 @@ const CollectionList: NextPage = () => {
           {
             collections.length === 0 ?
               <Box sx={{margin: '10rem auto'}}>
-                collection이  존재하지 않습니다.
+                collection이 존재하지 않습니다.
               </Box>
               :
               collections.map((item,i) =>
@@ -40,8 +46,8 @@ const CollectionList: NextPage = () => {
 
         </Stack>
       </Box>
-  </>
-)
+    </>
+  )
 }
 
-export default CollectionList
+export default MyCollectionList

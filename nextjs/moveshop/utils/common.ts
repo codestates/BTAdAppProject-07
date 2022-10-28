@@ -6,3 +6,8 @@ export const FAUCET_URL =
 
 export const aptosCoinStore =
   "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>";
+
+
+export const getRandomColor = () => {
+  return "#" + Math.floor(Math.random() * 0xfff).toString(16);
+}

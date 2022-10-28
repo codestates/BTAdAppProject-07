@@ -948,7 +948,7 @@ ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-aptos@^1.3.14:
+aptos@^1.3.14, aptos@^1.3.16:
   version "1.3.16"
   resolved "https://registry.npmjs.org/aptos/-/aptos-1.3.16.tgz"
   integrity sha512-LxI4XctQ5VeL+HokjwuGPwsb1fcydLIn4agFXyhn7hSYosTLNRxQ3UIixyP4Fmv6qPBjQVu8hELVSlThQk/EjA==
