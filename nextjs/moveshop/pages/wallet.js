@@ -1,7 +1,6 @@
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 export default function Wallet({ data }) {

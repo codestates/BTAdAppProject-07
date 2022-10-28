@@ -62,3 +62,10 @@ exports.postCollection = async (req, res, next) => {
       res.status(200).json({ result: "collection created" });
     });
 };
+
+exports.getCollectedCollections = async (req, res, next) => {
+  const collections = await models.collection.findAll({
+    attributes: ['collection_title'],
+  });
+  res.status(200).json({ data: collections });
+};
