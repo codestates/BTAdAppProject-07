@@ -30,22 +30,25 @@
 
 # 사용법
 
-- nextjs 실행
+- nextjs (프론트엔드) 실행
 
 ```
-cd nextjs
+cd nextjs/moveshop
+npm install
 npm run dev
 ```
 
-- server 실행
+- server (백엔드) 실행
 
 ```
+cd server
+npm install
 docker docker-compose up
 config/config.json (설정에서 포트 확인 할 것)
 npm install sequelize-cli -g
 sequelize db:create
 sequelize db:migrate
-npm run dev
+npm start
 ```
 
 # 페이지 URL 소개
