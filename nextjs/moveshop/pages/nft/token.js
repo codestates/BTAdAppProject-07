@@ -1,8 +1,8 @@
-import {useWallet} from "@manahippo/aptos-wallet-adapter";
-import {AptosClient, CoinClient, TokenClient,} from "aptos";
-import {useEffect, useState} from "react";
-import {Button, Container, Stack, TextField,} from "@mui/material";
-import {useRouter} from "next/router";
+import { useWallet } from "@manahippo/aptos-wallet-adapter";
+import { AptosClient, CoinClient, TokenClient } from "aptos";
+import { useEffect, useState } from "react";
+import { Button, Container, Stack, TextField } from "@mui/material";
+import { useRouter } from "next/router";
 import axios from "axios";
 import Link from "next/link";
 
@@ -74,7 +74,7 @@ export default function Token() {
         nft_desc: tokendesc,
         img_url: nfturl,
       });
-      router.push("/nft/tokens");
+      router.push("/mypage");
     } catch (err) {
       console.log(err);
     }

@@ -2,7 +2,7 @@
 
 - npm install
 - npm start
-  - localhost:8080/account/account
+  - localhost:8080/api/nft
 
 ### sequelize
 
