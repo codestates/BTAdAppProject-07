@@ -15,24 +15,28 @@ const CollectedItems: NextPage<CollectedItemsProps> = (props) => {
   const [collectedCollections, setCollectedCollections] = useState([])
 
   useEffect(() => {
-    getResources().then(r =>  console.log(r)).catch(e => console.log(e))
+    getResources()
   }, [address])
 
   const getResources = async () => {
     if (address !== null ) {
       const walletClient = new WalletClient(NODE_URL, FAUCET_URL)
-      const collections = await walletClient.getTokens(address)
-      const getCollectionItems = collections.reduce( (myCollections, myCollection) => {
-        const {collection, uri, name, description} = myCollection.token
-        myCollections.push({
-          collection_title: collection,
-          image: uri,
+      const tokens = await walletClient.getTokenIds(address)
+
+      Promise.all(tokens.tokenIds.map(async (token) => {
+        const myNft = await walletClient.getToken(token.data)
+        const {collection, uri, name, description} = myNft
+        return {
+          collection: collection,
           name: name,
-          description: description
-        })
-        return myCollections
-      }, [])
-      setCollectedCollections(getCollectionItems)
+          image: uri,
+          description: description,
+          tokenId: token.data,
+          isMine: true
+        }
+      })).then(collectedNFTs => {
+        setCollectedCollections(collectedNFTs)
+      })
     }
   }
 

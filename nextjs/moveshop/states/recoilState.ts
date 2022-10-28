@@ -12,4 +12,12 @@ export const walletModalState = atom({
   default: false
 })
 
+export const sellNFTModalState = atom({
+  key: 'sellNFTModalState',
+  default: false
+})
 
+export const tokenIdState = atom({
+  key: 'tokenIdState',
+  default: {}
+})

@@ -3,4 +3,6 @@ export interface ItemProps {
     name: string;
     image: string;
     description: string;
+    tokenId: object;
+    isMine: boolean;
 }
