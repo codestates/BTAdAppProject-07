@@ -2,8 +2,10 @@
 
 # 프로젝트 소개
 
-- 프로젝트명 : 무브샵
-- 프로젝트 목적 : NFT 생성 및 전시 공유 Dapp
+- 프로젝트명
+  - 무브샵
+- 프로젝트 목적
+  - NFT 생성 및 전시 공유 Dapp
 - 사용한 블록체인
   - Aptos (APT)
 - 앱토스 소개
@@ -55,8 +57,11 @@ npm start
 
 - 홈페이지 : /
 - 마이 페이지 : /mypage
+  - 현재 소유중인 NFT 리스트 확인
 - NFT 생성 : /nft/token
+  - NFT 생성 및 Collection 유무 확인
 - Collection 생성 : /nft/collection
+  - NFT가 포함된 Collection 생성
 
 # API List
 
