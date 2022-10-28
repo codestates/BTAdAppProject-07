@@ -1,5 +1,6 @@
 export interface ItemProps {
-    value: number;
-    title: string;
+    collection_title: string;
+    name: string;
     image: string;
+    description: string;
 }

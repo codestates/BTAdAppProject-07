@@ -4,7 +4,7 @@ import {
   Button,
   Divider,
   Drawer,
-  IconButton, Link,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -22,7 +22,7 @@ import {WalletModal} from "./walletModal";
 const drawerWidth = 240;
 
 export default function Navbar() {
-  const { connected, disconnect } = useWallet();
+  const { connected, disconnect, account } = useWallet();
   const [open, setOpen] = useState(false)
 
   // recoil에서 state 값 가져오기
@@ -38,7 +38,10 @@ export default function Navbar() {
   }
 
   const handleConnectWallet = () => {
-    if(connected) disconnect()
+    if(connected) {
+      disconnect()
+      router.push('/')
+    }
     else setOpenWalletModal(true)
   }
 
@@ -105,7 +108,7 @@ export default function Navbar() {
               </Button>
             </ListItem>
             {defaultMenu.map(menu => (
-              <ListItem disablePadding>
+              <ListItem disablePadding key={menu.id}>
                 <ListItemButton onClick={() => handleClickListButton(menu.route)}>
                   <ListItemText primary={menu.text}/>
                 </ListItemButton>
@@ -117,7 +120,7 @@ export default function Navbar() {
             connected &&
             <List key={'personal'}>
               {personalMenu.map(menu => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={menu.id}>
                   <ListItemButton onClick={() => handleClickListButton(menu.route)}>
                     <ListItemText primary={menu.text}/>
                   </ListItemButton>

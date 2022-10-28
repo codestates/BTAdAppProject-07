@@ -3,6 +3,7 @@
     "username": "root",
     "password": "root",
     "database": "dev-moveshop",
+    "port": 3320,
     "host": "127.0.0.1",
     "dialect": "mysql"
   },

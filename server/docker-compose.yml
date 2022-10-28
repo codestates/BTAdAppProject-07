@@ -5,9 +5,9 @@ services:
     image: mysql/mysql-server:8.0.23
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: dev-moveshop
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
     ports:
-      - "3311:3306"
+      - "3320:3306"

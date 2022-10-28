@@ -1,23 +1,8 @@
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
-import {
-  AptosClient,
-  AptosAccount,
-  FaucetClient,
-  TokenClient,
-  CoinClient,
-} from "aptos";
-import { NODE_URL, FAUCET_URL } from "../../utils/common";
-import { useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  Box,
-  Grid,
-  Stack,
-  Blocks,
-  TextField,
-} from "@mui/material";
-import { useRouter } from "next/router";
+import {useWallet} from "@manahippo/aptos-wallet-adapter";
+import {AptosClient, CoinClient, TokenClient,} from "aptos";
+import {useEffect, useState} from "react";
+import {Button, Container, Stack, TextField,} from "@mui/material";
+import {useRouter} from "next/router";
 import axios from "axios";
 
 export default function Token() {
@@ -81,11 +66,11 @@ export default function Token() {
         <Stack spacing={1}>
           <label>Address</label>
           <Container>
-            <p>{myAddress}</p>
+            <div>{myAddress}</div>
           </Container>
           <label>Public Key</label>
           <Container>
-            <p>{myPublicKey}</p>
+            <div>{myPublicKey}</div>
           </Container>
           <label>Collection Title</label>
           <TextField

@@ -1,17 +1,9 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, {useEffect, useState} from "react";
 import nacl from "tweetnacl";
-import {
-  AptosClient,
-  AptosAccount,
-  FaucetClient,
-  TokenClient,
-  CoinClient,
-  AptosAccountObject,
-} from "aptos";
+import {AptosAccount, AptosClient,} from "aptos";
 
 export default function Test({ data }) {
   const [address, setAddress] = useState(null);
@@ -157,15 +149,15 @@ export default function Test({ data }) {
       <Button variant="contained" onClick={disconnectWallet}>
         Disconnect Wallet
       </Button>
-      <hr />
+      <Box/>
       <Button variant="contained" onClick={callTransaction}>
         Transaction Test
       </Button>
-      <hr />
+      <Box/>
       <Button variant="contained" onClick={makeToken}>
         make Token
       </Button>
-      <hr />
+      <Box/>
       <Button variant="contained" onClick={callMessage}>
         Message Test
       </Button>

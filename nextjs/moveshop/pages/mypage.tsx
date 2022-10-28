@@ -1,5 +1,7 @@
-import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {Box, Tab, Tabs} from "@mui/material";
 import {ReactNode, SyntheticEvent, useState} from "react";
+import {useWallet} from "@manahippo/aptos-wallet-adapter";
+import CollectedItems from "../components/collectedItems";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -8,22 +10,16 @@ interface TabPanelProps {
 }
 
 const TabPanel = (props: { index: number, value: any, children: ReactNode }) => {
-  const { children, value, index, ...other } = props;
 
+  const { children, value, index, ...other } = props;
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`collection-tabpanel-${index}`}
-      aria-labelledby={`collection-tab-${index}`}
-      {...other}
-    >
+    <Box>
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -35,6 +31,7 @@ const a11yProps = (index: number) => {
 }
 
 export default function MyPage() {
+  const {account} = useWallet()
   const [value, setValue] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -43,19 +40,24 @@ export default function MyPage() {
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ width: '100%'}}>
+        <Box sx={{ width : '90%', margin: '0 auto', minHeight: '100px', backgroundColor: "#5a849b", color: "#fff"}}>
+          {`address ${account?.address}`}
+        </Box>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', width : '90%', margin: '0 auto'}}>
           <Tabs value={value} onChange={handleChange} aria-label="user tabs">
             <Tab label="Collected" {...a11yProps(0)} />
             <Tab label="Created" {...a11yProps(1)} />
           </Tabs>
         </Box>
-        <TabPanel value={value} index={0}>
-          Item One
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
+        <Box sx={{ width : '90%', margin: '0 auto'}}>
+          <TabPanel value={value} index={0}>
+            <CollectedItems address={account?.address}/>
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            Item Two
+          </TabPanel>
+        </Box>
       </Box>
     </>
   )
