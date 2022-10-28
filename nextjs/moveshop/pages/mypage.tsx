@@ -1,7 +1,8 @@
 import {Box, Tab, Tabs} from "@mui/material";
-import {ReactNode, SyntheticEvent, useState} from "react";
+import React, {ReactNode, SyntheticEvent, useState} from "react";
 import {useWallet} from "@manahippo/aptos-wallet-adapter";
 import CollectedItems from "../components/collectedItems";
+import {SellNFTModal} from "../components/sellNFTModal";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -32,7 +33,8 @@ const a11yProps = (index: number) => {
 
 export default function MyPage() {
   const {account} = useWallet()
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(0)
+  const [open, setOpen] = useState(false)
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -40,6 +42,7 @@ export default function MyPage() {
 
   return (
     <>
+      <SellNFTModal address={account?.address}/>
       <Box sx={{ width: '100%'}}>
         <Box sx={{ width : '90%', margin: '0 auto', minHeight: '100px', backgroundColor: "#5a849b", color: "#fff"}}>
           {`address ${account?.address}`}
