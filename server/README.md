@@ -1,4 +1,4 @@
-## How start
+## Getting Started
 
 - npm install
 - npm start
@@ -97,12 +97,44 @@ response
 }
 ```
 
+생성된 Collection 하나 가져오기
+
+```
+GET /api/collection/1
+response
+{
+    "data": [
+        {
+            "id": 1,
+            "user_address": "hellosdfh2342l",
+            "collection_title": "test collection name",
+            "collection_desc": "colelction description",
+            "createdAt": "2022-10-27T11:54:37.000Z",
+            "updatedAt": "2022-10-27T11:54:37.000Z"
+        }
+    ]
+}
+```
+
 Collection 생성
 
 ```
 POST /api/collection
 json 형식으로 보낼것
 {
+    "user_address":"hellosdfh2342l",
+    "collection_title":"test collection name",
+    "collection_desc":"colelction description"
+}
+```
+
+전체 Collections 조회
+
+```
+POST /api/collections
+json 형식으로 보낼것
+{
+    "id": 1,
     "user_address":"hellosdfh2342l",
     "collection_title":"test collection name",
     "collection_desc":"colelction description"
