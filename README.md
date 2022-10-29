@@ -78,3 +78,7 @@ npm start
   - GET /api/collection?user_address={user_address}
 - Collection 생성
   - POST /api/collection
+- Collection 하나 조회
+  - POST /api/collection/{id}
+- 모든 Collection 조회
+  - GET /api/collections
