@@ -1,8 +1,18 @@
 ## Getting Started
 
-- npm install
-- npm start
-  - localhost:8080/api/nft
+패키지 설치
+```bash
+npm run install
+# or
+yarn install
+```
+
+프로젝트 실행
+```bash
+npm run start
+# or
+yarn start
+```
 
 ### sequelize
 
@@ -16,6 +26,10 @@
 - sequelize model:generate --name collection --attributes user_address:string,collection_title:string,collection_desc:string
 - sequelize db:migrate
 - dev-moveshop db에 nft, collection 테이블 생성됨
+
+## collection 생성 
+yarn create-collection
+
 
 ## API List
 

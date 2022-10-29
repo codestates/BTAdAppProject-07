@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   collection.init({
     user_address: DataTypes.STRING,
     collection_title: DataTypes.STRING,
-    collection_desc: DataTypes.STRING
+    collection_desc: DataTypes.STRING,
+    is_market_collection: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'collection',
