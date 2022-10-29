@@ -28,7 +28,12 @@ yarn start
 - dev-moveshop db에 nft, collection 테이블 생성됨
 
 ## collection 생성 
+실행 시 민팅용 nft 생성, 하루 한 번 생성 가능
+```bash
+npm create-collection
+# or
 yarn create-collection
+```
 
 
 ## API List
@@ -153,4 +158,24 @@ json 형식으로 보낼것
     "collection_title":"test collection name",
     "collection_desc":"colelction description"
 }
+```
+
+민팅 가능한 nft 가져오기
+```
+GET /api/mint
+{
+    "id": 1,
+    "collection":"test collection name",
+    "nft_name":"colelction description"
+}
+```
+
+claim 완료 처리
+```
+PATCH /api/mint/:id/occupied
+```
+
+offer address 남기기
+```
+PATCH /api/mint/:id/offer
 ```
