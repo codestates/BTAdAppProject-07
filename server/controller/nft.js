@@ -92,3 +92,68 @@ exports.getCollections = async (req, res, next) => {
   });
   res.status(200).json({ data: collections });
 };
+
+exports.getMintingCollection = async (req, res, next) => {
+  const collection = await models.collection.findOne({
+    where: {
+      is_market_collection: {
+        [Op.eq]: true,
+      },
+    },
+    order: [
+      ['createdAt', 'desc'],
+    ],
+    limit: 1
+  });
+  res.status(200).json({ data: collection });
+}
+
+exports.getMintNFT = async (req, res, next) => {
+  const {collection_name} = req.query;
+  const availableMintingNFT = await models.mint_nft.findOne({
+    where: {
+      occupied: {
+        [Op.eq]: false,
+      },
+      offer_address: {
+        [Op.is]: null
+      },
+      collection: {
+        [Op.eq]: collection_name
+      }
+    },
+    order: [
+      ['createdAt', 'desc'],
+    ],
+    limit: 1,
+    attributes: ['id', 'collection', 'nft_name'],
+  });
+  res.status(200).json({ data: availableMintingNFT });
+}
+
+exports.patchMintNFTToClaimToken = async (req, res, next) => {
+  models.mint_nft.update(
+    {
+      occupied: true,
+    },
+    {
+      where: {id: req.params.id}
+    }
+  ).then((_) => {
+    res.status(200);
+  });
+}
+
+exports.patchMinNFTToOfferToken = async (req, res, next) => {
+  const address =  req.body.user_address;
+  models.mint_nft.update(
+    {
+      offer_address: address,
+    },
+    {
+      where: {id: req.params.id}
+    }
+  ).then((_) => {
+    res.status(200);
+  });
+}

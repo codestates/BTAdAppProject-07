@@ -23,6 +23,15 @@ const tokeClient = new TokenClient(client)
 const coinClient = new CoinClient(client)
 const faucetClient = new FaucetClient(aptosNodeURL, aptosFaucetURL)
 
+const getRandomSVG = () => {
+  const baseURL = 'https://source.boringavatars.com'
+  const type = ['marble', 'beam', 'pixel', 'sunset', 'ring', 'bauhaus']
+  const shape = ['', 'square']
+  const selectType = type[Math.floor(Math.random() * 5)]
+  const shapeType = shape[Math.floor(Math.random() * 1)]
+  return `${baseURL}/${selectType}/40/${new Date().getTime()}?${shapeType}`
+}
+
 const createCollection = async (_) => {
   try {
     console.log('오늘의 collection 처리 진행')
@@ -44,6 +53,9 @@ const createCollection = async (_) => {
     const collectionName = `오늘의 NFT, ${nextYear}년까지 D-${day}일`
     const collectionDescription = `오늘은 ${nextYear}년까지 D-${day}일 남았습니다. 올해를 잘 끝내봐요!`
 
+    // 생성할 nft 수
+    const totalSupply = 10
+
     const alreadyCreateCollection = await tokeClient.getCollectionData(marketAddress, collectionName)
       .then(response => {
         console.log('이미 오늘의 collection 생성이 완료되었습니다.', response)
@@ -56,7 +68,7 @@ const createCollection = async (_) => {
         collectionName,
         collectionDescription,
         marketURL,
-        100
+        totalSupply
       )
       const result = await client.waitForTransactionWithResult(txHash)
       console.log('transaction 처리 완료', result)
@@ -68,8 +80,36 @@ const createCollection = async (_) => {
           is_market_collection: true,
         })
         .then((_) => {
-          console.log('로컬 저장 완료')
+          console.log('collection 로컬 저장 완료')
         });
+
+      for(let i = 1; i <= totalSupply; i++){
+        const imageURL = getRandomSVG()
+        const nftName = `${collectionName} #${i}`
+        console.log(nftName)
+        let txHash = await tokeClient.createToken(
+          marketAccount,
+          collectionName,
+          nftName,
+          collectionDescription,
+          1,
+          imageURL
+        )
+
+        await client.waitForTransaction(txHash).then(response => {
+          console.log(response)
+          models.mint_nft
+            .create({
+              collection: collectionName,
+              nft_name: nftName,
+              occupied: false,
+              img_url: imageURL
+            })
+            .then((_) => {
+              console.log(`${i} 번째 생성완료`)
+            });
+        })
+      }
     }
   } catch (e) {
     console.error(e)
