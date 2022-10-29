@@ -1,22 +1,26 @@
+import { useWallet } from "@manahippo/aptos-wallet-adapter";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import nacl from "tweetnacl";
-import {AptosAccount, AptosClient,} from "aptos";
+import { AptosAccount, AptosClient } from "aptos";
+import { MaybeHexString, WalletClient } from "@martiandao/aptos-web3-bip44.js";
+import { FAUCET_URL, NODE_URL } from "../utils/common";
 
 export default function Test({ data }) {
+  const { wallets, connect, account, disconnect, signAndSubmitTransaction } =
+    useWallet();
   const [address, setAddress] = useState(null);
   const [publicKey, setPublicKey] = useState(null);
   const [apiResult, setApiResult] = useState(null);
   const [wallet, setWallet] = useState(null);
 
   const getAptosWallet = () => {
-    if ("aptos" in window) {
-      return window.aptos;
-    } else {
-      window.open("https://petra.app/", `_blank`);
+    if ("martian" in window) {
+      return window.martian;
     }
+    window.open("https://www.martianwallet.xyz/", "_blank");
   };
 
   const connectWallet = async () => {
@@ -30,9 +34,6 @@ export default function Test({ data }) {
     } catch (error) {
       // { code: 4001, message: "User rejected the request."}
     }
-    const account = await window.aptos.account();
-    console.log("window aptos account");
-    console.log(account);
   };
 
   const disconnectWallet = async () => {
@@ -46,93 +47,88 @@ export default function Test({ data }) {
     }
   };
 
-  const callTransaction = async () => {
-    console.log(wallet);
-    const address =
-      "0xb24fcb7736a66f83aa2291b847be2797786153e20561bd92559343456addd113";
-    const transaction = {
-      // address, amount
-      arguments: [address, "50000000"],
-      function: "0x1::coin::transfer",
+  const sendToken = async () => {
+    // Create a transaction
+    const response = await window.martian.connect();
+    const sender = response.address;
+    const payload = {
+      function: "0x3::token::get_collection_uri",
+      type_arguments: ["0x3::token::Collections"],
+      arguments: [
+        "0x037451e367e2222b10876b21b2da345794f74b31036bae6da0c27641de6b0dd5",
+        "My Collection 01",
+      ],
+    };
+    // 0x037451e367e2222b10876b21b2da345794f74b31036bae6da0c27641de6b0dd5;
+    const transaction = await window.martian.generateTransaction(
+      sender,
+      payload
+    );
+    const txnHash = await window.martian.signAndSubmitTransaction(transaction);
+  };
+
+  // 참고 문서
+  // https://github.com/aptos-labs/aptos-core/tree/main/aptos-move/framework/aptos-token/doc
+
+  const token_offer = async () => {
+    const payload = {
       type: "entry_function_payload",
-      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      function: "0x3::token_transfers::offer_script",
+      type_arguments: [],
+      arguments: [
+        "0x589882ca3299af9ba76065c8aa8244c6a24f0e9d76eff306899b4c5cc2425398",
+        address,
+        "My Collection 01",
+        "Token NFT 002",
+        0,
+        1,
+      ],
     };
-    try {
-      const pendingTransaction = await window.aptos.signAndSubmitTransaction(
-        transaction
-      );
-      const client = new AptosClient("https://testnet.aptoslabs.com");
-      const txn = await client.waitForTransactionWithResult(
-        pendingTransaction.hash
-      );
-      console.log(txn);
-    } catch (error) {
-      console.log("transaction failed");
-      console.log(error);
-    }
+    signAndSubmitTransaction(payload)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => console.log(e));
   };
 
-  const makeToken = async () => {
-    const address =
-      "0xb24fcb7736a66f83aa2291b847be2797786153e20561bd92559343456addd113";
-    const transaction = {
-      // address, amount
-      arguments: [address, "50000000"],
-      function: "0x3::token::transfer",
+  const cancel_offer = async () => {
+    const payload = {
       type: "entry_function_payload",
-      type_arguments: ["0x3::aptos_coin::AptosCoin"],
+      function: "0x3::token_transfers::cancel_offer_script",
+      type_arguments: [],
+      arguments: [
+        "0x037451e367e2222b10876b21b2da345794f74b31036bae6da0c27641de6b0dd5",
+        address,
+        "My Collection 01",
+        "Token NFT 001",
+        0,
+      ],
     };
-    try {
-      const pendingTransaction = await window.aptos.signAndSubmitTransaction(
-        transaction
-      );
-      const client = new AptosClient("https://testnet.aptoslabs.com");
-      const txn = await client.waitForTransactionWithResult(
-        pendingTransaction.hash
-      );
-      console.log(txn);
-    } catch (error) {
-      console.log("transaction failed");
-      console.log(error);
-    }
+    signAndSubmitTransaction(payload)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => console.log(e));
   };
 
-  const callMessage = async () => {
-    const message = "hello";
-    const nonce = "random_string";
-
-    try {
-      const response = await window.aptos.signMessage({
-        message,
-        nonce,
-      });
-      const { publicKey } = await window.aptos.account();
-      // Remove the 0x prefix
-      const key = publicKey.slice(2, 66);
-      const verified = nacl.sign.detached.verify(
-        Buffer.from(response.fullMessage),
-        Buffer.from(response.signature, "hex"),
-        Buffer.from(key, "hex")
-      );
-      console.log(verified);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const testAptosAccount = async () => {
-    const aptosAccountObject = {
-      address:
-        "0x978c213990c4833df71548df7ce49d54c759d6b6d932de22b24d56060b7af2aa",
-      privateKeyHex:
-        // eslint-disable-next-line max-len
-        "0xc5338cd251c22daa8c9c9cc94f498cc8a5c7e1d2e75287a5dda91096fe64efa5de19e5d1880cac87d57484ce9ed2e84cf0f9599f12e7cc3a52e4e7657a763f2c",
-      publicKeyHex:
-        "0xde19e5d1880cac87d57484ce9ed2e84cf0f9599f12e7cc3a52e4e7657a763f2c",
+  const claim_offer = async () => {
+    const payload = {
+      type: "entry_function_payload",
+      function: "0x3::token_transfers::claim_script",
+      type_arguments: [],
+      arguments: [
+        "0x037451e367e2222b10876b21b2da345794f74b31036bae6da0c27641de6b0dd5",
+        "0x037451e367e2222b10876b21b2da345794f74b31036bae6da0c27641de6b0dd5",
+        "My Collection 01",
+        "Token NFT 001",
+        0,
+      ],
     };
-    const account = AptosAccount.fromAptosAccountObject(aptosAccountObject);
-    console.log(account);
-    console.log(`Balance : ${await coinClient.checkBalance(account)}`);
+    signAndSubmitTransaction(payload)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => console.log(e));
   };
 
   useEffect(() => {
@@ -147,22 +143,20 @@ export default function Test({ data }) {
       <div>Address: {address}</div>
       <div>publicKey: {publicKey}</div>
       <Button variant="contained" onClick={disconnectWallet}>
+        <hr />
         Disconnect Wallet
       </Button>
-      <Box/>
-      <Button variant="contained" onClick={callTransaction}>
-        Transaction Test
+      <hr />
+      <Button variant="contained" onClick={token_offer}>
+        Token offer
       </Button>
-      <Box/>
-      <Button variant="contained" onClick={makeToken}>
-        make Token
+      <hr />
+      <Button variant="contained" onClick={cancel_offer}>
+        Token Offer Cancel
       </Button>
-      <Box/>
-      <Button variant="contained" onClick={callMessage}>
-        Message Test
-      </Button>
-      <Button variant="contained" onClick={testAptosAccount}>
-        Test Account
+      <hr />
+      <Button variant="contained" onClick={claim_offer}>
+        Token Claim
       </Button>
     </Container>
   );

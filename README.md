@@ -3,9 +3,9 @@
 # 프로젝트 소개
 
 - 프로젝트명
-  - 무브샵
+  - 무민샵
 - 프로젝트 목적
-  - NFT 생성 및 전시 공유 Dapp
+  - NFT 생성 및 전시 Dapp
 - 사용한 블록체인
   - Aptos (APT)
 - 앱토스 소개
@@ -56,12 +56,15 @@ npm start
 # 페이지 URL 소개
 
 - 홈페이지 : /
+  - 해당 서비스에서 사용자들이 생성한 모든 Collection 조회
+  - Collection 별 NFT 조회
 - 마이 페이지 : /mypage
-  - 현재 소유중인 NFT 리스트 확인
+  - 지갑 연결 사용자가 생성한 Collection 조회
+  - 현재 소유중인 NFT 리스트 조회
+- Collection 생성 : /nft/collection
+  - NFT를 포함시킬 Collection 생성
 - NFT 생성 : /nft/token
   - NFT 생성 및 Collection 유무 확인
-- Collection 생성 : /nft/collection
-  - NFT가 포함된 Collection 생성
 
 # API List
 
