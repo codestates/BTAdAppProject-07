@@ -33,16 +33,21 @@ const Home: NextPage = () => {
   }, [])
 
   const getMintingInfo = async () => {
-    const result = await axios.get(`http://localhost:8080/api/collection/market`)
-    const {collection_title, user_address, collection_desc} = result.data.data
+    await axios.get(`http://localhost:8080/api/collection/market`)
+      .then(result => {
+        const {collection_title, user_address, collection_desc} = result.data.data
 
-    if (collection_title && user_address) {
-      setMintCollection({
-        collectionName: collection_title,
-        creator: user_address,
-        description: collection_desc
+        if (collection_title && user_address) {
+          setMintCollection({
+            collectionName: collection_title,
+            creator: user_address,
+            description: collection_desc
+          })
+        }
+      }).catch(e => {
+        console.log('민팅용 nft가 존재하지 않습니다.')
+        console.log(e)
       })
-    }
   }
 
   const handleClickMinting = async () => {
