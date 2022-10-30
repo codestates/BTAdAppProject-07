@@ -14,6 +14,20 @@ npm run start
 yarn start
 ```
 
+# env 설정
+.env.example을 복사해서 환경설정을 해주세요.
+MARKET_PRIVATE_KEY, MARKET_ADDRESS 마켓용 지갑의 address와 private key를 적어주세요.
+민팅 시 사용합니다.
+```bash
+MARKET_PRIVATE_KEY=
+MARKET_ADDRESS=
+MARKET_NAME=mominshop
+MARKET_URL=http://localhost:3000
+APTOS_NODE_URL=https://fullnode.devnet.aptoslabs.com
+APTOS_FAUCET_URL=https://faucet.devnet.aptoslabs.com
+```
+
+
 ### sequelize
 
 - config/config.json 폴더에 접속관련 설정이 있음
