@@ -1,10 +1,11 @@
 // @ts-nocheck
-import {Box, Stack} from "@mui/material";
+import {Box, Button, Stack} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {MaybeHexString, WalletClient} from "@martiandao/aptos-web3-bip44.js";
 import {FAUCET_URL, NODE_URL} from "../utils/common";
 import {NextPage} from "next";
 import NFTItem from "./NFTItem";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 interface CollectedItemsProps {
   address?: MaybeHexString
@@ -43,6 +44,12 @@ const MyCollectedList: NextPage<CollectedItemsProps> = (props) => {
   return (
     <>
       <Box>
+        <Box sx={{textAlign: 'right'}}>
+          <Button onClick={getResources}>
+            <ReplayIcon/>
+            내 nft 불러오기
+          </Button>
+        </Box>
         <Stack direction={{xs: 'column', sm: 'row'}} sx={{flexWrap: 'wrap', justifyContent: 'center'}}
                spacing={{xs: 1, sm: 2, md: 4}}>
           {

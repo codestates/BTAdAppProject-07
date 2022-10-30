@@ -50,7 +50,7 @@ const createCollection = async (_) => {
     const targetDate = new Date(`${nextYear}-01-01T00:00:00+0900`)
     const distance = targetDate.getTime() - today.getTime()
     const day = Math.floor(distance/(1000*60*60*24));
-    const collectionName = `오늘의 NFT, ${nextYear}년까지 D-${day}일`
+    const collectionName = `오늘의 NFT, ${nextYear}년까지 D-${day}일!!`
     const collectionDescription = `오늘은 ${nextYear}년까지 D-${day}일 남았습니다. 올해를 잘 끝내봐요!`
 
     // 생성할 nft 수
@@ -106,7 +106,18 @@ const createCollection = async (_) => {
               img_url: imageURL
             })
             .then((_) => {
-              console.log(`${i} 번째 생성완료`)
+              console.log(`${i} 번째 저장1`)
+            });
+          models.nft
+            .create({
+              collection: collectionName,
+              nft_name: nftName,
+              supply: 1,
+              nft_desc: collectionDescription,
+              img_url: imageURL,
+            })
+            .then((_) => {
+              console.log(`${i} 번째 저장2`)
             });
         })
       }

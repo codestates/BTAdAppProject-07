@@ -4,11 +4,9 @@ import React, {ReactNode, SyntheticEvent, useEffect, useState} from "react";
 import {useWallet} from "@manahippo/aptos-wallet-adapter";
 import MyCollectedList from "../components/myCollectedList";
 import {SellNFTModal} from "../components/sellNFTModal";
-import {getRandomColor} from "../utils/common";
 import MyCollectionList from "../components/myCollectionList";
 
 const TabPanel = (props: { index: number, value: any, children: ReactNode }) => {
-
   const { children, value, index, ...other } = props;
   return (
     <Box>
@@ -32,10 +30,8 @@ export default function MyPage() {
   const {account} = useWallet()
   const [value, setValue] = useState(0)
   const [open, setOpen] = useState(false)
-  const [bgColor, setBGColor] = useState('')
 
   useEffect(() => {
-    setBGColor(getRandomColor())
   }, [])
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -44,11 +40,13 @@ export default function MyPage() {
 
   return (
     <>
-      <SellNFTModal address={account?.address}/>
+     {/* <SellNFTModal address={account?.address}/>*/}
       <Box sx={{ width: '100%'}}>
-        <Box sx={{height: "300px", padding: "20px", backgroundColor: `${bgColor}`, color: "#fff", position: 'relative'}}>
-          <h2>내 지갑 주소</h2>
-          <h3>{`${account?.address}`}</h3>
+        <Box sx={{height: "300px", padding: "20px", backgroundColor: `#211e1e`, color: "#fff", position: 'relative'}}>
+          <Box sx={{width: '90%', textAlign: 'left', margin: '0 auto'}}>
+           <h2>내 지갑 주소</h2>
+           <h3>{`${account?.address}`}</h3>
+          </Box>
         </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider', width : '90%', margin: '0 auto'}}>
           <Tabs value={value} onChange={handleChange} aria-label="user tabs">
