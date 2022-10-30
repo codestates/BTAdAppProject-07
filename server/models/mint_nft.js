@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     nft_name: DataTypes.STRING,
     occupied: DataTypes.BOOLEAN,
     img_url: DataTypes.STRING,
+    offer_address: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'mint_nft',

@@ -1,5 +1,5 @@
 import {AptosAccount, AptosClient, HexString, TokenClient} from "aptos";
-import {getRandomSVG, NODE_URL} from "./common";
+import {NODE_URL} from "./common";
 import axios from "axios";
 
 export const mintNFT = async (address, collection) => {
@@ -11,53 +11,52 @@ export const mintNFT = async (address, collection) => {
   const hex = new HexString(process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY)
   const marketAccount = new AptosAccount(hex.toUint8Array())
 
-  const collectionData = await tokeClient.getCollectionData(marketAccount.address(), collection.collectionName)
-  const {supply} = collectionData
-  const nextTokenNumber = Number(supply) + 1
+  try {
+    const result = await axios.get(`http://localhost:8080/api/mint?collection_name=${collection.collectionName}`)
 
-  const tokenName = `${collection.collectionName} #${new Date().getTime()}`
-  const uri = getRandomSVG()
+    if (!result.data.data){
+      alert('발급 처리할 nft가 존재하지 않습니다.')
+      throw '발급 처리할 nft가 존재하지 않습니다.'
+    }
 
-  const token = await tokeClient.createToken(
-    marketAccount,
-    collection.collectionName,
-    tokenName,
-    collection.description,
-    1,
-    uri
-  )
-  console.log(token)
+    const {id, nft_name} = result.data.data
+    console.log('발급 처리 정보', result.data.data)
 
-  const result = await axios.post("http://localhost:8080/api/nft", {
-    user_address: marketAccount.address().toString(),
-    collection: collection.collectionName,
-    nft_name: tokenName,
-    supply: 1,
-    nft_desc:  collection.description,
-    img_url: uri,
-  });
-
-  const offerTxHash = await tokeClient.offerToken(
-    marketAccount,
-    address,
-    marketAccount.address().toString(),
-    collection.collectionName,
-    tokenName,
-    1,
-    0)
-  console.log(offerTxHash)
-
-  // payload
-  return {
-    type: "entry_function_payload",
-    function: "0x3::token_transfers::claim_script",
-    type_arguments: [],
-    arguments: [
+    const offerTxHash = await tokeClient.offerToken(
+      marketAccount,
+      address,
       marketAccount.address().toString(),
-      collection.creator,
       collection.collectionName,
-      tokenName,
-      0
-    ]
+      nft_name,
+      1,
+      0)
+
+    const transactionResult = await client.waitForTransactionWithResult(offerTxHash)
+    console.log('transaction 처리 완료', transactionResult)
+    console.log('offer transaction hash', offerTxHash)
+
+    const pathResult= await axios.patch(`http://localhost:8080/api/mint/${id}/offer`, {
+      user_address: address
+    })
+
+    console.log(pathResult)
+
+    const payload = {
+      type: "entry_function_payload",
+      function: "0x3::token_transfers::claim_script",
+      type_arguments: [],
+      arguments: [
+        marketAccount.address().toString(),
+        marketAccount.address().toString(),
+        collection.collectionName,
+        nft_name,
+        0
+      ]
+    }
+    console.log(payload)
+    return payload
+  } catch (e) {
+    console.log(e)
+    throw 'offer 실패'
   }
 }

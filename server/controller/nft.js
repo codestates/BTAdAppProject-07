@@ -123,37 +123,44 @@ exports.getMintNFT = async (req, res, next) => {
       }
     },
     order: [
-      ['createdAt', 'desc'],
+      ['id', 'asc'],
     ],
     limit: 1,
     attributes: ['id', 'collection', 'nft_name'],
   });
-  res.status(200).json({ data: availableMintingNFT });
+  return res.status(200).json({ data: availableMintingNFT });
 }
 
 exports.patchMintNFTToClaimToken = async (req, res, next) => {
-  models.mint_nft.update(
-    {
-      occupied: true,
+  const id = req.params.id
+  const updateMintNFT = await models.mint_nft.findOne({
+    where: {
+      id: {
+        [Op.eq]: id,
+      },
     },
-    {
-      where: {id: req.params.id}
-    }
-  ).then((_) => {
-    res.status(200);
-  });
+  })
+  updateMintNFT.occupied = true
+  await updateMintNFT.save()
+    .then((_) => {
+      return res.status(200).json({ data: true })
+    })
 }
 
 exports.patchMinNFTToOfferToken = async (req, res, next) => {
   const address =  req.body.user_address;
-  models.mint_nft.update(
-    {
-      offer_address: address,
+  const id = req.params.id
+  const updateMintNFT = await models.mint_nft.findOne({
+    where: {
+      id: {
+        [Op.eq]: id,
+      },
     },
-    {
-      where: {id: req.params.id}
-    }
-  ).then((_) => {
-    res.status(200);
-  });
+  })
+  console.log(updateMintNFT)
+  updateMintNFT.offer_address = address
+  await updateMintNFT.save({fields:['offer_address']})
+    .then((_) => {
+      return res.status(200).json({ data: true })
+    })
 }
